@@ -1,0 +1,40 @@
+DL-07-T1: Real MongoDB verification evidence
+Test date: 26 November 2026
+Source: Summary transcribed from the task owner's locally executed PowerShell output.
+This is not a verbatim terminal log or output from the subsequently prepared reusable script.
+No credentials, product identifiers, prices or raw database records are included.
+
+Direct search checks (limit 5)
+DB01 | Freddo | brand=None | 5 returned | PASS
+DB02 | Cadbury Freddo | brand=None | 0 returned | FAIL
+DB03 | Freddo | brand=Cadbury | 5 returned | PASS
+DB04 | KitKat | brand=None | 5 returned | PASS
+DB05 | KitKat | brand=Nestle | 2 returned | PASS
+DB06 | Dairy Milk | brand=Cadbury | 5 returned | PASS
+First three: existing mongo_tool_test.py. Remaining three: direct repository calls.
+The smoke test connected successfully. Price comparison completed for DB01 and DB03;
+price accuracy and freshness were not assessed. DB02 search executed successfully but returned no products.
+
+MateBot checks (real repository, LLM planning disabled, limit 5)
+ID | Message | Extracted product_name | Returned | Proposed assessment
+LIVE01 | Find Freddo | Freddo | 5 | PASS
+LIVE02 | Find Cadbury Freddo | Cadbury Freddo | 0 | FAIL
+LIVE03 | Show me Dairy Milk | Dairy Milk | 5 | PASS
+LIVE04 | Find cadbury freddo | cadbury freddo | 0 | FAIL
+LIVE05 | Find Nestle KitKat | Nestle KitKat | 0 | FAIL
+LIVE06 | Find XYZ123 | XYZ123 | 0 | PASS
+LIVE07 | Show me Cadbury | Cadbury | 5 | NEEDS REVIEW
+LIVE08 | Find Cadbury Dairy Milk | Cadbury Dairy Milk | 1 | NEEDS REVIEW
+
+All eight: success=True, action=search_products, brand=None, pack_size=None,
+category=None, retailer=None, limit=5, needs_clarification=False.
+All zero-result responses: I could not find matching products.
+LIVE07 included a product with a different recorded brand.
+LIVE08 returned one product with a combined brand value; separated search DB06 returned five.
+
+Direct searches: 5/6 proposed requirements met.
+Chatbot checks: 3 passed, 3 failed, 2 need review. Workflow errors: 0/8.
+These are proposed assessments, not approved acceptance criteria.
+Results reflect the catalogue at the time of testing and are capped at five per query.
+LLM-enabled planning and full frontend/API integration remain unverified.
+No production fix was implemented.
